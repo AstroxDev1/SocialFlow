@@ -12,7 +12,7 @@ const menu = [
   {
     icon: LayoutDashboard,
     label: "Dashboard",
-    path: "/",
+    path: "/dashboard",
   },
   {
     icon: Users,
@@ -37,7 +37,7 @@ const menu = [
   {
     icon: Settings,
     label: "Configurações",
-    path: "/configuracoes",
+    path: "/configuracao",
   },
 ];
 

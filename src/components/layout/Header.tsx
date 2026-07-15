@@ -1,6 +1,19 @@
-import { Bell, Search, UserCircle2 } from "lucide-react";
+import {
+  Bell,
+  Search,
+  UserCircle2,
+  LogOut,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
+
   return (
     <header className="h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-6">
       <div className="flex items-center gap-3">
@@ -24,11 +37,20 @@ export default function Header() {
 
           <div>
             <p className="font-semibold">Astrox</p>
+
             <span className="text-xs text-slate-400">
               Administrador
             </span>
           </div>
         </div>
+
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white transition hover:bg-red-700"
+        >
+          <LogOut size={18} />
+          Sair
+        </button>
       </div>
     </header>
   );

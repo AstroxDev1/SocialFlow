@@ -1,23 +1,99 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
+import MainLayout from "../layouts/MainLayout";
+import PrivateRoute from "./PrivateRoute";
+
+import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Clients from "../pages/Clients";
 import Posts from "../pages/Posts";
 import Calendar from "../pages/Calendar";
 import Library from "../pages/Library";
-import Settings from "../pages/Settings";
+import Setting from "../pages/Settings";
 
 export default function AppRoutes() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/clientes" element={<Clients />} />
-        <Route path="/posts" element={<Posts />} />
-        <Route path="/calendario" element={<Calendar />} />
-        <Route path="/biblioteca" element={<Library />} />
-        <Route path="/configuracoes" element={<Settings />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      {/* Login */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Dashboard */}
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <Dashboard />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+
+      {/* Clientes */}
+      <Route
+        path="/clientes"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <Clients />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+
+      {/* Posts */}
+      <Route
+        path="/posts"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <Posts />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+
+      {/* Calendário */}
+      <Route
+        path="/calendario"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <Calendar />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+
+      {/* Biblioteca */}
+      <Route
+        path="/biblioteca"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <Library />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+
+      {/* Configuração */}
+      <Route
+        path="/configuracao"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <Setting />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+
+      {/* Página inicial */}
+      <Route path="/" element={<Login />} />
+
+      {/* Qualquer rota desconhecida */}
+      <Route path="*" element={<Login />} />
+    </Routes>
   );
 }
