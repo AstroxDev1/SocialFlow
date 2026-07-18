@@ -6,10 +6,12 @@ import PrivateRoute from "./PrivateRoute";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Clients from "../pages/Clients";
-import Posts from "../pages/Posts";
+import Posts from "../pages/Posts.tsx";
 import Calendar from "../pages/Calendar";
 import Library from "../pages/Library";
 import Setting from "../pages/Settings";
+import NewSchedule from "../pages/NewSchedule";
+import Schedules from "../pages/Schedules";
 
 export default function AppRoutes() {
   return (
@@ -52,6 +54,30 @@ export default function AppRoutes() {
           </PrivateRoute>
         }
       />
+
+{/* Agendamentos */}
+<Route
+  path="/agendamentos"
+  element={
+    <PrivateRoute>
+      <MainLayout>
+        <Schedules />
+      </MainLayout>
+    </PrivateRoute>
+  }
+/>
+
+{/* Novo Agendamento */}
+<Route
+  path="/agendamentos/novo"
+  element={
+    <PrivateRoute>
+      <MainLayout>
+        <NewSchedule />
+      </MainLayout>
+    </PrivateRoute>
+  }
+/>
 
       {/* Calendário */}
       <Route

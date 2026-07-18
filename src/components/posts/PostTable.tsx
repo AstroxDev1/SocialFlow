@@ -1,71 +1,239 @@
-import { Pencil, Trash2 } from "lucide-react";
+type Post = {
+  id: number;
+  title: string;
+  caption?: string;
+  type: string;
+  status: string;
+  client?: {
+    companyName: string;
+  } | null;
+};
 
-const posts = [
-  {
-    id: 1,
-    title: "Promoção de Julho",
-    client: "Astrox",
-    network: "Instagram",
-    status: "Agendado",
-    date: "20/07/2026",
-  },
-  {
-    id: 2,
-    title: "Reels Clínica",
-    client: "Clínica Vida",
-    network: "TikTok",
-    status: "Rascunho",
-    date: "--",
-  },
-  {
-    id: 3,
-    title: "Carrossel Tech",
-    client: "Loja Tech",
-    network: "LinkedIn",
-    status: "Publicado",
-    date: "18/07/2026",
-  },
-];
 
-export default function PostTable() {
+type Props = {
+  posts: Post[];
+  onEdit?: (post: Post) => void;
+  onDelete?: (id: number) => void;
+};
+
+
+export default function PostTable({
+  posts,
+  onEdit,
+  onDelete,
+}: Props) {
+
+
+
   return (
-    <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+
+    <div
+      className="
+        overflow-hidden
+        rounded-xl
+        border
+        border-slate-800
+        bg-slate-900
+      "
+    >
+
+
       <table className="w-full">
+
+
         <thead className="bg-slate-800">
+
           <tr>
-            <th className="text-left p-4">Título</th>
-            <th className="text-left p-4">Cliente</th>
-            <th className="text-left p-4">Rede</th>
-            <th className="text-left p-4">Status</th>
-            <th className="text-left p-4">Data</th>
-            <th className="text-left p-4">Ações</th>
+
+            <th className="p-4 text-left">
+              Título
+            </th>
+
+
+            <th className="p-4 text-left">
+              Tipo
+            </th>
+
+
+            <th className="p-4 text-left">
+              Cliente
+            </th>
+
+
+            <th className="p-4 text-left">
+              Status
+            </th>
+
+
+            <th className="p-4 text-left">
+              Ações
+            </th>
+
+
           </tr>
+
         </thead>
 
-        <tbody>
-          {posts.map((post) => (
-            <tr
-              key={post.id}
-              className="border-t border-slate-800 hover:bg-slate-800/40"
-            >
-              <td className="p-4">{post.title}</td>
-              <td className="p-4">{post.client}</td>
-              <td className="p-4">{post.network}</td>
-              <td className="p-4">{post.status}</td>
-              <td className="p-4">{post.date}</td>
-              <td className="p-4 flex gap-3">
-                <button>
-                  <Pencil size={18} />
-                </button>
 
-                <button>
-                  <Trash2 size={18} />
-                </button>
+
+
+        <tbody>
+
+
+          {posts.length === 0 ? (
+
+            <tr>
+
+              <td
+                colSpan={5}
+                className="
+                  p-6
+                  text-center
+                  text-slate-400
+                "
+              >
+
+                Nenhum post encontrado.
+
               </td>
+
             </tr>
-          ))}
+
+
+          ) : (
+
+
+            posts.map((post) => (
+
+              <tr
+                key={post.id}
+                className="border-t border-slate-800"
+              >
+
+
+                <td className="p-4">
+                  {post.title}
+                </td>
+
+
+
+                <td className="p-4">
+                  {post.type}
+                </td>
+
+
+
+
+                <td className="p-4">
+
+                  {post.client?.companyName ?? "Sem cliente"}
+
+                </td>
+
+
+
+
+                <td className="p-4">
+
+                  <span
+                    className="
+                      rounded-full
+                      bg-slate-800
+                      px-3
+                      py-1
+                      text-sm
+                    "
+                  >
+
+                    {post.status}
+
+                  </span>
+
+                </td>
+
+
+
+
+
+                <td className="p-4 space-x-2">
+
+
+                  <button
+
+                    onClick={() => {
+
+                      if (typeof onEdit === "function") {
+
+                      onEdit(post);
+
+                      }
+
+                    }}
+                    className="
+                      rounded-lg
+                      bg-yellow-600
+                      px-3
+                      py-1
+                      text-sm
+                      hover:bg-yellow-700
+                    "
+
+                  >
+
+                    Editar
+
+                  </button>
+
+
+
+
+                  <button
+
+                    onClick={() => {
+
+                      if (typeof onDelete === "function") {
+
+                      onDelete(post.id);
+
+                      }
+
+                    }}
+
+                    className="
+                      rounded-lg
+                      bg-red-600
+                      px-3
+                      py-1
+                      text-sm
+                      hover:bg-red-700
+                    "
+
+                  >
+
+                    Excluir
+
+                  </button>
+
+
+                </td>
+
+
+
+              </tr>
+
+            ))
+
+          )}
+
+
         </tbody>
+
+
       </table>
+
+
     </div>
+
   );
+
 }
