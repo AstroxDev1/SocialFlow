@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 
+
 const data = [
   { name: "Seg", alcance: 1200 },
   { name: "Ter", alcance: 1800 },
@@ -18,31 +19,106 @@ const data = [
   { name: "Dom", alcance: 3600 },
 ];
 
+
+
 export default function PerformanceChart() {
+
+
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 h-[420px]">
-      <h2 className="text-xl font-semibold mb-6">
-        Desempenho da Semana
-      </h2>
 
-      <ResponsiveContainer width="100%" height="90%">
+    <div className="h-[360px]">
+
+
+      <ResponsiveContainer
+        width="100%"
+        height="100%"
+      >
+
+
         <LineChart data={data}>
-          <CartesianGrid stroke="#334155" strokeDasharray="4 4" />
 
-          <XAxis dataKey="name" stroke="#94a3b8" />
 
-          <YAxis stroke="#94a3b8" />
+          <CartesianGrid
+            stroke="#1e293b"
+            strokeDasharray="5 5"
+          />
 
-          <Tooltip />
+
+
+          <XAxis
+
+            dataKey="name"
+
+            stroke="#64748b"
+
+            tickLine={false}
+
+            axisLine={false}
+
+          />
+
+
+
+          <YAxis
+
+            stroke="#64748b"
+
+            tickLine={false}
+
+            axisLine={false}
+
+          />
+
+
+
+
+
+          <Tooltip
+
+            contentStyle={{
+              backgroundColor: "#0f172a",
+              border: "1px solid #1e293b",
+              borderRadius: "12px",
+              color: "#fff",
+            }}
+
+          />
+
+
+
+
+
 
           <Line
+
             type="monotone"
+
             dataKey="alcance"
-            stroke="#3b82f6"
-            strokeWidth={4}
+
+            stroke="#2563eb"
+
+            strokeWidth={3}
+
+            dot={{
+              r: 5,
+            }}
+
+            activeDot={{
+              r: 7,
+            }}
+
           />
+
+
+
         </LineChart>
+
+
       </ResponsiveContainer>
+
+
     </div>
+
   );
+
 }
