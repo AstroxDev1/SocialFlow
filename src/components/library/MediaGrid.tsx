@@ -10,6 +10,7 @@ type Media = {
 
 type MediaGridProps = {
   media: Media[];
+  onDelete: (id: number) => void;
 };
 
 function formatFileSize(bytes: number) {
@@ -24,6 +25,7 @@ function formatFileSize(bytes: number) {
 
 export default function MediaGrid({
   media,
+  onDelete,
 }: MediaGridProps) {
   if (media.length === 0) {
     return (
@@ -148,16 +150,17 @@ export default function MediaGrid({
               </a>
 
               <button
-                className="
+                  onClick={() => onDelete(item.id)}
+                  className="
                   rounded-lg
-                  bg-blue-600
+                  bg-red-600
                   px-4
                   text-white
                   transition
-                  hover:bg-blue-700
+                  hover:bg-red-700
                 "
               >
-                ⋮
+                🗑️
               </button>
             </div>
           </div>

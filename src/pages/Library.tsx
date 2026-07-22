@@ -24,9 +24,12 @@ export default function Library() {
     async function loadMedia() {
       try {
         const response = await api.get<Media[]>("/media");
+
         setMedia(response.data);
+
       } catch (error) {
         console.error("Erro ao carregar mídias:", error);
+
       } finally {
         setLoading(false);
       }
@@ -34,6 +37,7 @@ export default function Library() {
 
     loadMedia();
   }, []);
+
 
   async function handleUpload(file: File) {
     try {
@@ -47,19 +51,53 @@ export default function Library() {
         },
       });
 
-      setMedia((old) => [response.data, ...old]);
+      setMedia((old) => [
+        response.data,
+        ...old,
+      ]);
 
       setShowUpload(false);
+
     } catch (error) {
       console.error("Erro no upload:", error);
+
       alert("Erro ao enviar arquivo.");
     }
   }
 
+
+
+  async function handleDelete(id: number) {
+    try {
+
+      await api.delete(`/media/${id}`);
+
+
+      setMedia((old) =>
+        old.filter((item) => item.id !== id)
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao excluir mídia:",
+        error
+      );
+
+      alert("Erro ao excluir mídia.");
+    }
+  }
+
+
+
   return (
     <div className="pt-6 space-y-8">
+
       <div className="flex items-center justify-between">
+
         <div>
+
           <h1 className="text-4xl font-bold tracking-tight text-white">
             Biblioteca
           </h1>
@@ -67,7 +105,9 @@ export default function Library() {
           <p className="mt-2 text-slate-400">
             Gerencie suas imagens, vídeos e arquivos.
           </p>
+
         </div>
+
 
         <button
           onClick={() => setShowUpload(true)}
@@ -84,7 +124,10 @@ export default function Library() {
         >
           + Upload
         </button>
+
       </div>
+
+
 
       <div
         className="
@@ -95,6 +138,7 @@ export default function Library() {
           p-4
         "
       >
+
         <input
           placeholder="Pesquisar mídia..."
           className="
@@ -105,22 +149,37 @@ export default function Library() {
             outline-none
           "
         />
+
       </div>
 
+
+
       {loading ? (
+
         <div className="py-20 text-center text-slate-400">
           Carregando biblioteca...
         </div>
+
       ) : (
-        <MediaGrid media={media} />
+
+        <MediaGrid
+          media={media}
+          onDelete={handleDelete}
+        />
+
       )}
 
+
+
       {showUpload && (
+
         <UploadModal
           onClose={() => setShowUpload(false)}
           onSave={handleUpload}
         />
+
       )}
+
     </div>
   );
 }
