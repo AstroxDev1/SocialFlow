@@ -1,28 +1,99 @@
 import { useState } from "react";
-import { UploadCloud, FileImage } from "lucide-react";
+
 
 type UploadModalProps = {
   onClose: () => void;
   onSave: (file: File) => void;
 };
 
+
+
 export default function UploadModal({
   onClose,
   onSave,
 }: UploadModalProps) {
-  const [file, setFile] = useState<File | null>(null);
 
-  function handleSubmit() {
-    if (!file) {
-      alert("Selecione um arquivo.");
-      return;
-    }
 
-    onSave(file);
-    onClose();
+  const [file, setFile] =
+    useState<File | null>(null);
+
+
+  const [dragActive, setDragActive] =
+    useState(false);
+
+
+
+
+
+  function handleFile(
+    selectedFile: File
+  ) {
+
+    setFile(selectedFile);
+
   }
 
+
+
+
+
+
+
+  function handleDrop(
+    e: React.DragEvent<HTMLDivElement>
+  ) {
+
+    e.preventDefault();
+
+
+    setDragActive(false);
+
+
+
+    const droppedFile =
+      e.dataTransfer.files[0];
+
+
+    if(droppedFile){
+
+      handleFile(droppedFile);
+
+    }
+
+  }
+
+
+
+
+
+
+
+
+  function handleSubmit(){
+
+
+    if(!file){
+
+      return;
+
+    }
+
+
+    onSave(file);
+
+
+  }
+
+
+
+
+
+
+
+
+
   return (
+
     <div
       className="
         fixed
@@ -36,6 +107,9 @@ export default function UploadModal({
         p-4
       "
     >
+
+
+
       <div
         className="
           w-full
@@ -48,117 +122,274 @@ export default function UploadModal({
           shadow-2xl
         "
       >
-        <h2 className="text-2xl font-bold text-white">
+
+
+
+
+        <h2 className="
+          text-2xl
+          font-bold
+          text-white
+        ">
           Upload de arquivo
         </h2>
 
-        <p className="mt-2 text-slate-400">
-          Escolha uma imagem ou vídeo para adicionar à biblioteca.
+
+
+        <p className="
+          mt-2
+          text-sm
+          text-slate-400
+        ">
+          Arraste um arquivo ou clique para selecionar.
         </p>
 
-        <label
-          className="
-            mt-8
+
+
+
+
+
+
+        <div
+
+          onDragOver={(e)=>{
+
+            e.preventDefault();
+
+            setDragActive(true);
+
+          }}
+
+
+          onDragLeave={()=>{
+
+            setDragActive(false);
+
+          }}
+
+
+          onDrop={handleDrop}
+
+
+          className={`
+            mt-6
+
             flex
+
+            h-48
+
             cursor-pointer
+
             flex-col
+
             items-center
+
             justify-center
+
             rounded-2xl
+
             border-2
+
             border-dashed
-            border-slate-700
-            bg-slate-800/50
-            p-10
+
             transition
-            hover:border-blue-500
-            hover:bg-slate-800
-          "
+
+
+            ${
+              dragActive
+
+              ? "border-blue-500 bg-blue-500/10"
+
+              : "border-slate-700 bg-slate-800"
+
+            }
+
+          `}
+
         >
-          <UploadCloud
-            size={48}
-            className="text-blue-500"
-          />
 
-          <span className="mt-4 text-white font-medium">
-            Clique para escolher um arquivo
-          </span>
 
-          <span className="mt-1 text-sm text-slate-400">
-            PNG, JPG, WEBP, GIF, MP4...
-          </span>
+          <div className="text-5xl">
+            📂
+          </div>
 
-          <input
-            type="file"
-            accept="image/*,video/*"
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.files?.length) {
-                setFile(e.target.files[0]);
-              }
-            }}
-          />
-        </label>
+
+
+          <p className="
+            mt-3
+            text-slate-300
+          ">
+
+            Arraste seu arquivo aqui
+
+          </p>
+
+
+
+          <label
+            className="
+              mt-3
+              cursor-pointer
+              rounded-lg
+              bg-blue-600
+              px-4
+              py-2
+              text-sm
+              text-white
+              hover:bg-blue-700
+            "
+          >
+
+            Escolher arquivo
+
+
+            <input
+
+              type="file"
+
+              className="hidden"
+
+              onChange={(e)=>{
+
+                const selected =
+                  e.target.files?.[0];
+
+
+                if(selected){
+
+                  handleFile(selected);
+
+                }
+
+              }}
+
+            />
+
+
+          </label>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
 
         {file && (
+
           <div
             className="
-              mt-6
-              flex
-              items-center
-              gap-4
+              mt-5
               rounded-xl
               bg-slate-800
               p-4
             "
           >
-            <FileImage className="text-blue-500" />
 
-            <div className="flex-1">
-              <p className="truncate font-medium text-white">
-                {file.name}
-              </p>
+            <p className="
+              text-sm
+              text-slate-400
+            ">
+              Arquivo selecionado:
+            </p>
 
-              <p className="text-sm text-slate-400">
-                {(file.size / 1024 / 1024).toFixed(2)} MB
-              </p>
-            </div>
+
+            <p className="
+              mt-1
+              truncate
+              font-medium
+              text-white
+            ">
+
+              {file.name}
+
+            </p>
+
+
           </div>
+
         )}
 
-        <div className="mt-8 flex justify-end gap-3">
+
+
+
+
+
+
+
+
+        <div className="
+          mt-8
+          flex
+          justify-end
+          gap-3
+        ">
+
+
+
           <button
+
             onClick={onClose}
+
             className="
               rounded-xl
               bg-slate-800
               px-5
               py-3
               text-slate-300
-              transition
               hover:bg-slate-700
             "
+
           >
+
             Cancelar
+
           </button>
 
+
+
+
+
           <button
+
             onClick={handleSubmit}
+
+            disabled={!file}
+
             className="
               rounded-xl
               bg-blue-600
               px-5
               py-3
-              font-medium
               text-white
               transition
               hover:bg-blue-700
+              disabled:cursor-not-allowed
+              disabled:opacity-50
             "
+
           >
-            Upload
+
+            Enviar
+
           </button>
+
+
+
         </div>
+
+
+
       </div>
+
+
     </div>
+
   );
+
 }
