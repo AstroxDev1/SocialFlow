@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
 
-import api from "../lib/api";
+import api from "../services/api";
 
 import ClientTable from "../components/clients/ClientTable";
+import ClientStats from "../components/clients/ClientStats";
+import ClientSearch from "../components/clients/ClientSearch";
+
 import Button from "../components/ui/Button";
 
 
-type Client = {
-  id: number;
-  companyName: string;
-  instagram: string;
-  niche: string;
-  phone?: string;
-  notes?: string;
-  status: string;
-};
+import type { Client } from "../components/clients/types";
 
 
 
@@ -23,19 +18,31 @@ export default function Clients() {
 
   const [clients, setClients] = useState<Client[]>([]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const [isModalOpen, setIsModalOpen] =
+    useState(false);
+
 
   const [editingClient, setEditingClient] =
     useState<Client | null>(null);
 
 
 
-  const [companyName, setCompanyName] = useState("");
-  const [instagram, setInstagram] = useState("");
-  const [niche, setNiche] = useState("");
-  const [phone, setPhone] = useState("");
-  const [notes, setNotes] = useState("");
+  const [companyName, setCompanyName] =
+    useState("");
 
+  const [instagram, setInstagram] =
+    useState("");
+
+  const [niche, setNiche] =
+    useState("");
+
+  const [phone, setPhone] =
+    useState("");
+
+  const [notes, setNotes] =
+    useState("");
 
 
 
@@ -46,10 +53,19 @@ export default function Clients() {
 
       const response = await api.get("/clients");
 
-      return response.data;
+
+      return response.data.map((client: Partial<Client>) => ({
+        id: client.id,
+        companyName: client.companyName || "",
+        instagram: client.instagram || "",
+        niche: client.niche || "",
+        phone: client.phone || "",
+        notes: client.notes || "",
+        status: client.status || "inactive",
+      }));
 
 
-    } catch (error) {
+    } catch(error) {
 
       console.error(
         "Erro ao carregar clientes:",
@@ -66,68 +82,67 @@ export default function Clients() {
 
 
 
+  async function refreshClients(){
+
+    const data = await loadClients();
+
+    setClients(data);
+
+  }
+
+
+
+
+
   useEffect(() => {
 
+  async function load(){
 
-    async function fetchClients() {
+    const data = await loadClients();
 
-      const data = await loadClients();
+    setClients(data);
 
-      setClients(data);
-
-    }
-
-
-    fetchClients();
+  }
 
 
-  }, []);
+  load();
+
+}, []);
 
 
 
 
 
 
+  async function createClient(){
 
-  async function createClient() {
-
-    try {
+    try{
 
 
-      await api.post("/clients", {
+      await api.post("/clients",{
 
         companyName,
-
         instagram,
-
         niche,
-
         phone,
-
         notes,
 
       });
 
 
-
-      const data = await loadClients();
-
-      setClients(data);
-
+      await refreshClients();
 
 
       closeModal();
 
 
 
-    } catch(error) {
-
+    }catch(error){
 
       console.error(
         "Erro ao criar cliente:",
         error
       );
-
 
     }
 
@@ -137,16 +152,14 @@ export default function Clients() {
 
 
 
+  async function updateClient(){
 
 
-  async function updateClient() {
-
-
-    if (!editingClient) return;
+    if(!editingClient) return;
 
 
 
-    try {
+    try{
 
 
       await api.put(
@@ -154,15 +167,10 @@ export default function Clients() {
         {
 
           companyName,
-
           instagram,
-
           niche,
-
           phone,
-
           notes,
-
           status: editingClient.status,
 
         }
@@ -170,25 +178,20 @@ export default function Clients() {
 
 
 
-      const data = await loadClients();
-
-      setClients(data);
-
+      await refreshClients();
 
 
       closeModal();
 
 
 
-    } catch(error) {
-
+    }catch(error){
 
       console.error(
         "Erro ao atualizar cliente:",
         error
       );
 
-
     }
 
 
@@ -198,39 +201,30 @@ export default function Clients() {
 
 
 
+  async function deleteClient(id:number){
 
 
-  async function deleteClient(id:number) {
-
-
-    try {
+    try{
 
 
       await api.delete(`/clients/${id}`);
 
 
-
-      const data = await loadClients();
-
-      setClients(data);
+      await refreshClients();
 
 
 
-    } catch(error) {
-
+    }catch(error){
 
       console.error(
         "Erro ao excluir cliente:",
         error
       );
 
-
     }
 
 
   }
-
-
 
 
 
@@ -241,13 +235,11 @@ export default function Clients() {
 
     setEditingClient(null);
 
-
     setCompanyName("");
     setInstagram("");
     setNiche("");
     setPhone("");
     setNotes("");
-
 
     setIsModalOpen(true);
 
@@ -266,15 +258,29 @@ export default function Clients() {
     setEditingClient(client);
 
 
-    setCompanyName(client.companyName);
+    setCompanyName(
+      client.companyName
+    );
 
-    setInstagram(client.instagram);
 
-    setNiche(client.niche);
+    setInstagram(
+      client.instagram || ""
+    );
 
-    setPhone(client.phone || "");
 
-    setNotes(client.notes || "");
+    setNiche(
+      client.niche || ""
+    );
+
+
+    setPhone(
+      client.phone || ""
+    );
+
+
+    setNotes(
+      client.notes || ""
+    );
 
 
 
@@ -282,7 +288,6 @@ export default function Clients() {
 
 
   }
-
 
 
 
@@ -307,7 +312,6 @@ export default function Clients() {
 
     setNotes("");
 
-
   }
 
 
@@ -316,286 +320,288 @@ export default function Clients() {
 
 
 
+  const filteredClients =
+    clients.filter((client)=>{
 
-  return (
 
-    <div className="space-y-8">
+      const term =
+        search.toLowerCase();
 
 
-      <div className="flex items-center justify-between">
 
+      return (
 
-        <div>
+        client.companyName
+        .toLowerCase()
+        .includes(term)
 
 
-          <h1 className="text-4xl font-bold">
-            Clientes
-          </h1>
+        ||
 
+        client.instagram
+        .toLowerCase()
+        .includes(term)
 
-          <p className="mt-2 text-slate-400">
-            Gerencie todos os seus clientes.
-          </p>
 
+        ||
 
-        </div>
+        client.niche
+        .toLowerCase()
+        .includes(term)
 
+      );
 
 
+    });
 
 
-        <Button
-          onClick={openCreateModal}
-        >
-          + Novo Cliente
-        </Button>
 
 
 
-      </div>
 
+  const totalClients =
+    clients.length;
 
 
 
+  const activeClients =
+    clients.filter(
+      client =>
+        client.status.toLowerCase() === "active"
+        ||
+        client.status.toLowerCase() === "ativo"
+    ).length;
 
 
 
-      <ClientTable
+  const inactiveClients =
+    totalClients - activeClients;
 
-        clients={clients}
 
-        onEdit={openEditModal}
 
-        onDelete={deleteClient}
+  const niches =
+    new Set(
+      clients.map(
+        client=>client.niche
+      )
+    ).size;
 
-      />
 
 
 
 
 
 
+return (
 
-      {isModalOpen && (
+<div className="space-y-8 pt-8">
 
-        <div
-          className="
-            fixed
-            inset-0
-            z-50
-            flex
-            items-center
-            justify-center
-            bg-black/70
-            backdrop-blur-sm
-          "
-        >
 
 
+<div className="
+flex
+flex-col
+gap-4
+md:flex-row
+md:items-center
+md:justify-between
+mb-2
+">
 
-          <div
-            className="
-              w-full
-              max-w-xl
-              rounded-2xl
-              border
-              border-slate-800
-              bg-slate-900
-              p-8
-              shadow-2xl
-            "
-          >
 
+<div>
 
+<h1 className="text-4xl font-bold tracking-tight">
+Clientes
+</h1>
 
-            <div
-              className="
-                mb-6
-                flex
-                items-center
-                justify-between
-              "
-            >
 
+<p className="mt-3 text-slate-400">
+Gerencie todos os seus clientes.
+</p>
 
-              <h2 className="text-2xl font-bold">
 
-                {editingClient
-                  ? "Editar Cliente"
-                  : "Novo Cliente"}
+</div>
 
-              </h2>
 
+<Button
+onClick={openCreateModal}
+>
++ Novo Cliente
+</Button>
 
 
+</div>
 
-              <button
 
-                onClick={closeModal}
 
-                className="
-                  text-3xl
-                  text-slate-400
-                  hover:text-white
-                "
 
-              >
 
-                ×
+<ClientStats
 
-              </button>
+total={totalClients}
 
+active={activeClients}
 
-            </div>
+inactive={inactiveClients}
 
+niches={niches}
 
+/>
 
 
 
 
 
-            <div className="space-y-4">
+<ClientSearch
 
+value={search}
 
+onChange={setSearch}
 
-              {[
-                {
-                  placeholder:"Empresa",
-                  value:companyName,
-                  set:setCompanyName
-                },
-                {
-                  placeholder:"Instagram",
-                  value:instagram,
-                  set:setInstagram
-                },
-                {
-                  placeholder:"Nicho",
-                  value:niche,
-                  set:setNiche
-                },
-                {
-                  placeholder:"Telefone",
-                  value:phone,
-                  set:setPhone
-                },
-              ].map((item)=>(
-                
-                <input
+/>
 
-                  key={item.placeholder}
 
-                  placeholder={item.placeholder}
 
-                  value={item.value}
 
-                  onChange={(e)=>item.set(e.target.value)}
 
-                  className="
-                    w-full
-                    rounded-xl
-                    border
-                    border-slate-700
-                    bg-slate-950
-                    p-3
-                    outline-none
-                    focus:border-blue-500
-                  "
+<ClientTable
 
-                />
+clients={filteredClients}
 
-              ))}
+onEdit={openEditModal}
 
+onDelete={deleteClient}
 
+/>
 
 
 
-              <textarea
 
-                rows={4}
 
-                placeholder="Observações"
+{isModalOpen && (
 
-                value={notes}
+<div className="
+fixed
+inset-0
+z-50
+flex
+items-center
+justify-center
+bg-black/70
+px-4
+">
 
-                onChange={(e)=>setNotes(e.target.value)}
 
-                className="
-                  w-full
-                  rounded-xl
-                  border
-                  border-slate-700
-                  bg-slate-950
-                  p-3
-                  outline-none
-                  focus:border-blue-500
-                "
+<div className="
+w-full
+max-w-xl
+rounded-2xl
+bg-[#121722]
+p-8
+">
 
-              />
 
+<h2 className="text-2xl font-bold mb-6">
 
+{editingClient
+?
+"Editar Cliente"
+:
+"Novo Cliente"}
 
+</h2>
 
 
 
-              <div className="flex justify-end gap-3 pt-4">
+<input
+className="input"
+placeholder="Empresa"
+value={companyName}
+onChange={
+e=>setCompanyName(e.target.value)
+}
+/>
 
 
-                <Button
+<input
+className="input"
+placeholder="Instagram"
+value={instagram}
+onChange={
+e=>setInstagram(e.target.value)
+}
+/>
 
-                  variant="secondary"
 
-                  onClick={closeModal}
+<input
+className="input"
+placeholder="Nicho"
+value={niche}
+onChange={
+e=>setNiche(e.target.value)
+}
+/>
 
-                >
 
-                  Cancelar
+<textarea
+className="input"
+placeholder="Observações"
+value={notes}
+onChange={
+e=>setNotes(e.target.value)
+}
+/>
 
-                </Button>
 
 
+<div className="
+flex
+justify-end
+gap-3
+mt-5
+">
 
 
+<Button
+variant="secondary"
+onClick={closeModal}
+>
+Cancelar
+</Button>
 
-                <Button
 
-                  onClick={
-                    editingClient
-                      ? updateClient
-                      : createClient
-                  }
+<Button
+onClick={
+editingClient
+?
+updateClient
+:
+createClient
+}
+>
 
-                >
+Salvar
 
-                  {editingClient
-                    ? "Atualizar Cliente"
-                    : "Salvar Cliente"}
+</Button>
 
-                </Button>
 
 
+</div>
 
-              </div>
 
+</div>
 
 
+</div>
 
-            </div>
+)}
 
 
 
-          </div>
+</div>
 
+);
 
-
-        </div>
-
-      )}
-
-
-
-    </div>
-
-  );
 
 }

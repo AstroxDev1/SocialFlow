@@ -11,7 +11,12 @@ type Post = {
   caption?: string;
   type: string;
   status: string;
+
+  platform?: string;
+  publishDate?: string;
+
   clientId?: number | null;
+
   client?: {
     companyName: string;
   } | null;
@@ -27,6 +32,13 @@ export default function Posts() {
   const [openModal, setOpenModal] = useState(false);
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+
+  const [search, setSearch] = useState("");
+
+  const [filter, setFilter] = useState("TODOS");
+
+
 
 
 
@@ -54,7 +66,10 @@ export default function Posts() {
 
 
 
+
+
   useEffect(() => {
+
 
     async function fetchPosts() {
 
@@ -67,7 +82,11 @@ export default function Posts() {
 
     fetchPosts();
 
+
   }, []);
+
+
+
 
 
 
@@ -85,17 +104,22 @@ export default function Posts() {
 
 
 
-  async function handleDelete(id: number) {
+
+
+  async function handleDelete(id:number) {
+
 
     const confirmDelete = window.confirm(
       "Deseja realmente excluir este post?"
     );
 
 
-    if (!confirmDelete) return;
+    if(!confirmDelete) return;
+
 
 
     try {
+
 
       await api.delete(`/posts/${id}`);
 
@@ -105,14 +129,18 @@ export default function Posts() {
       setPosts(data);
 
 
-    } catch (error) {
+
+    } catch(error) {
+
 
       console.error(
         "Erro ao excluir post",
         error
       );
 
+
     }
+
 
   }
 
@@ -120,7 +148,9 @@ export default function Posts() {
 
 
 
-  function handleNewPost() {
+
+
+  function handleNewPost(){
 
     setSelectedPost(null);
 
@@ -132,12 +162,47 @@ export default function Posts() {
 
 
 
+
+
+
+  const filteredPosts = posts.filter((post)=>{
+
+
+    const matchSearch =
+      post.title
+      .toLowerCase()
+      .includes(
+        search.toLowerCase()
+      );
+
+
+
+    const matchFilter =
+      filter === "TODOS"
+      ||
+      post.status === filter;
+
+
+
+    return matchSearch && matchFilter;
+
+
+  });
+
+
+
+
+
+
+
+
+
   return (
 
     <>
 
+      <div className="space-y-8 pt-6">
 
-      <div className="space-y-8">
 
 
         <div className="flex items-center justify-between">
@@ -145,16 +210,24 @@ export default function Posts() {
 
           <div>
 
-            <h1 className="text-4xl font-bold">
+
+            <h1 className="text-4xl font-bold tracking-tight">
+
               Posts
+
             </h1>
 
 
-            <p className="mt-2 text-slate-400">
-              Gerencie seus posts.
+
+            <p className="mt-3 text-slate-400">
+
+              Gerencie seus conteúdos publicados e agendados.
+
             </p>
 
+
           </div>
+
 
 
 
@@ -184,11 +257,73 @@ export default function Posts() {
 
 
 
+
+
+        <div className="flex gap-3">
+
+
+          {[
+            "TODOS",
+            "RASCUNHO",
+            "PUBLICADO"
+
+          ].map((item)=>(
+
+
+            <button
+
+              key={item}
+
+              onClick={()=>setFilter(item)}
+
+              className={`
+                rounded-lg
+                px-4
+                py-2
+                ${
+                  filter === item
+                  ?
+                  "bg-blue-600"
+                  :
+                  "bg-slate-800"
+                }
+              `}
+
+            >
+
+              {item}
+
+
+            </button>
+
+
+          ))}
+
+
+
+        </div>
+
+
+
+
+
+
+
+
         <input
+
 
           type="text"
 
+          value={search}
+
+          onChange={(e)=>
+            setSearch(e.target.value)
+          }
+
+
           placeholder="Pesquisar post..."
+
 
           className="
             w-full
@@ -201,7 +336,13 @@ export default function Posts() {
             outline-none
           "
 
+
         />
+
+
+
+
+
 
 
 
@@ -209,7 +350,7 @@ export default function Posts() {
 
         <PostTable
 
-          posts={posts}
+          posts={filteredPosts}
 
           onEdit={handleEdit}
 
@@ -218,7 +359,13 @@ export default function Posts() {
         />
 
 
+
+
+
+
       </div>
+
+
 
 
 
@@ -226,29 +373,41 @@ export default function Posts() {
 
       <PostModal
 
+
         open={openModal}
+
 
         post={selectedPost}
 
 
-        onClose={() => {
+
+
+        onClose={()=>{
+
 
           setOpenModal(false);
 
           setSelectedPost(null);
 
+
         }}
 
 
-        onSuccess={async () => {
+
+
+        onSuccess={async()=>{
+
 
           const data = await loadPosts();
 
           setPosts(data);
 
+
         }}
 
+
       />
+
 
 
     </>

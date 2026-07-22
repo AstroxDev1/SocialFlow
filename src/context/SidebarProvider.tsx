@@ -1,0 +1,68 @@
+import {
+  useState,
+} from "react";
+
+
+import type {
+  ReactNode,
+} from "react";
+
+
+import {
+  SidebarContext,
+} from "./sidebar-context";
+
+
+
+export function SidebarProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+
+
+  const [collapsed, setCollapsed] =
+    useState(false);
+
+
+  const [mobileOpen, setMobileOpen] =
+    useState(false);
+
+
+
+  function toggleSidebar() {
+
+    setCollapsed(prev => !prev);
+
+  }
+
+
+
+  function toggleMobile() {
+
+    setMobileOpen(prev => !prev);
+
+  }
+
+
+
+  return (
+
+    <SidebarContext.Provider
+
+      value={{
+        collapsed,
+        mobileOpen,
+        toggleSidebar,
+        toggleMobile,
+      }}
+
+    >
+
+      {children}
+
+    </SidebarContext.Provider>
+
+  );
+
+}

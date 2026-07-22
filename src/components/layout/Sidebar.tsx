@@ -7,39 +7,55 @@ import {
   FileText,
   Image,
   Settings,
+  Menu,
 } from "lucide-react";
 
+import { useSidebar } from "../../hooks/useSidebar";
 
-const menu = [
+
+const sections = [
   {
-    icon: LayoutDashboard,
-    label: "Dashboard",
-    path: "/dashboard",
+    title: "Geral",
+
+    items: [
+      {
+        icon: LayoutDashboard,
+        label: "Dashboard",
+        path: "/dashboard",
+      },
+      {
+        icon: Users,
+        label: "Clientes",
+        path: "/clientes",
+      },
+      {
+        icon: FileText,
+        label: "Posts",
+        path: "/posts",
+      },
+      {
+        icon: Calendar,
+        label: "Calendário",
+        path: "/calendario",
+      },
+      {
+        icon: Image,
+        label: "Biblioteca",
+        path: "/biblioteca",
+      },
+    ],
   },
+
   {
-    icon: Users,
-    label: "Clientes",
-    path: "/clientes",
-  },
-  {
-    icon: FileText,
-    label: "Posts",
-    path: "/posts",
-  },
-  {
-    icon: Calendar,
-    label: "Calendário",
-    path: "/calendario",
-  },
-  {
-    icon: Image,
-    label: "Biblioteca",
-    path: "/biblioteca",
-  },
-  {
-    icon: Settings,
-    label: "Configurações",
-    path: "/configuracao",
+    title: "Sistema",
+
+    items: [
+      {
+        icon: Settings,
+        label: "Configurações",
+        path: "/configuracao",
+      },
+    ],
   },
 ];
 
@@ -48,161 +64,530 @@ const menu = [
 export default function Sidebar() {
 
 
+  const {
+    collapsed,
+    mobileOpen,
+    toggleSidebar,
+    toggleMobile,
+  } = useSidebar();
+
+
+
+  function handleToggle(){
+
+    if(window.innerWidth < 1024){
+
+      toggleMobile();
+
+    }else{
+
+      toggleSidebar();
+
+    }
+
+  }
+
+
+
   return (
 
-    <aside
-      className="
+    <>
+
+
+      {
+        mobileOpen && (
+
+          <div
+
+            onClick={toggleMobile}
+
+            className="
+            fixed
+            inset-0
+            bg-black/60
+            z-40
+            lg:hidden
+            "
+
+          />
+
+        )
+
+      }
+
+
+
+      <aside
+
+        className={`
+        fixed
+        top-0
+        left-0
+
+        z-50
+
+        h-screen
+
         flex
-        w-72
         flex-col
+
+        bg-[#121722]
+
         border-r
         border-slate-800
-        bg-slate-900
-      "
-    >
+
+        transition-all
+        duration-300
 
 
-      {/* Logo */}
+        ${
+          collapsed
+          ?
+          "w-[80px]"
+          :
+          "w-[260px]"
+        }
 
-      <div
-        className="
+
+        ${
+          mobileOpen
+          ?
+          "translate-x-0"
+          :
+          "-translate-x-full lg:translate-x-0"
+        }
+
+        `}
+
+      >
+
+
+        {/* Botão */}
+
+        <button
+
+          onClick={handleToggle}
+
+          className="
+          absolute
+          right-[-12px]
+          top-6
+
+          hidden
+          lg:flex
+
+          h-6
+          w-6
+
+          items-center
+          justify-center
+
+          rounded-full
+
+          bg-blue-600
+
+          text-white
+
+          shadow-lg
+
+          "
+
+        >
+
+          <Menu size={14}/>
+
+        </button>
+
+
+
+
+        {/* Logo */}
+
+        <div
+
+          className={`
           border-b
           border-slate-800
-          p-6
-        "
-      >
 
-        <h1
-          className="
-            text-3xl
-            font-black
-            tracking-tight
-            text-blue-500
-          "
+          py-7
+
+          transition-all
+
+          ${
+            collapsed
+            ?
+            "px-4"
+            :
+            "px-7"
+          }
+
+          `}
+
         >
-          SocialFlow
-        </h1>
+
+          <div
+            className={`
+            flex
+            items-center
+
+            ${
+              collapsed
+              ?
+              "justify-center"
+              :
+              "gap-3"
+            }
+            `}
+          >
+
+            <div
+              className="
+              h-3
+              w-3
+              rounded-full
+              bg-blue-500
+              "
+            />
 
 
-        <p
+            {
+              !collapsed && (
+
+                <div>
+
+                  <h1 className="
+                  text-lg
+                  font-semibold
+                  ">
+                    SocialFlow
+                  </h1>
+
+
+                  <p className="
+                  text-xs
+                  text-slate-500
+                  ">
+                    Social Media Manager
+                  </p>
+
+                </div>
+
+              )
+            }
+
+
+          </div>
+
+
+        </div>
+
+
+
+
+
+        {/* Menu */}
+
+        <div
           className="
-            mt-1
-            text-sm
-            text-slate-400
-          "
-        >
-          Gestão de redes sociais
-        </p>
-
-
-      </div>
-
-
-
-
-
-      {/* Menu */}
-
-      <nav
-        className="
           flex-1
-          space-y-2
-          p-4
-        "
-      >
-
-        {menu.map((item) => {
-
-
-          const Icon = item.icon;
+          overflow-y-auto
+          px-4
+          py-6
+          "
+        >
 
 
-          return (
+          {
+            sections.map(section => (
 
-            <NavLink
+              <div
 
-              key={item.label}
+                key={section.title}
 
-              to={item.path}
+                className="mb-10"
 
-              className={({isActive}) => `
+              >
 
-                group
 
-                flex
-                items-center
-                gap-3
+                {
+                  !collapsed && (
 
-                rounded-xl
+                    <p
+                      className="
+                      mb-3
+                      px-3
 
-                px-4
-                py-3
+                      text-xs
+                      font-semibold
+                      uppercase
+                      tracking-widest
+                      text-slate-500
+                      "
+                    >
+                      {section.title}
+                    </p>
 
-                text-sm
-                font-medium
-
-                transition-all
-
-                ${
-                  isActive
-
-                  ?
-
-                  "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-
-                  :
-
-                  "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  )
 
                 }
 
-              `}
-
-            >
-
-              <Icon
-                size={21}
-                className="
-                  transition
-                  group-hover:scale-110
-                "
-              />
 
 
-              {item.label}
+                <nav className="space-y-1">
 
 
-            </NavLink>
-
-          );
-
-        })}
+                {
+                  section.items.map(item => {
 
 
-      </nav>
+                    const Icon = item.icon;
+
+
+                    return (
+
+                      <NavLink
+
+                        key={item.path}
+
+                        to={item.path}
+
+
+                        className={({isActive}) => `
+
+                        group
+
+                        relative
+
+                        flex
+
+                        items-center
+
+                        rounded-xl
+
+                        px-4
+                        py-3
+
+
+                        transition-all
+
+
+                        ${
+                          collapsed
+                          ?
+                          "justify-center"
+                          :
+                          "gap-3"
+                        }
+
+
+                        ${
+                          isActive
+                          ?
+                          "bg-slate-800 text-white"
+                          :
+                          "text-slate-400 hover:bg-slate-800/60 hover:text-white"
+                        }
+
+                        `}
+
+                      >
+
+
+                        <Icon size={19}/>
+
+
+
+                        {
+                          !collapsed && (
+
+                            <span className="font-medium">
+
+                              {item.label}
+
+                            </span>
+
+                          )
+                        }
+
+
+
+                        {
+                          collapsed && (
+
+                            <span
+
+                              className="
+                              absolute
+                              left-14
+
+                              hidden
+                              group-hover:block
+
+                              whitespace-nowrap
+
+                              rounded-lg
+
+                              bg-slate-900
+
+                              border
+                              border-slate-800
+
+                              px-3
+                              py-2
+
+                              text-xs
+
+                              text-white
+
+                              shadow-xl
+                              "
+
+                            >
+
+                              {item.label}
+
+                            </span>
+
+                          )
+                        }
+
+
+                      </NavLink>
+
+                    )
+
+                  })
+                }
+
+
+                </nav>
+
+
+              </div>
+
+            ))
+          }
+
+
+        </div>
 
 
 
 
 
-      {/* Rodapé */}
+        {/* Usuário */}
 
-      <div
-        className="
+        <div
+
+          className="
           border-t
           border-slate-800
-          p-4
-          text-xs
-          text-slate-500
-        "
-      >
+          p-5
+          "
 
-        SocialFlow v1.0
-
-      </div>
+        >
 
 
-    </aside>
+          {
+            collapsed ?
+
+            (
+
+              <div
+
+                className="
+                flex
+                justify-center
+                "
+
+              >
+
+                <div
+
+                  className="
+                  flex
+                  h-10
+                  w-10
+                  items-center
+                  justify-center
+
+                  rounded-full
+
+                  bg-blue-600
+
+                  font-bold
+                  "
+
+                >
+
+                  A
+
+                </div>
+
+              </div>
+
+            )
+
+
+            :
+
+            (
+
+              <div
+
+                className="
+                rounded-xl
+                bg-slate-900
+                p-4
+                "
+
+              >
+
+                <p className="font-medium">
+                  Astrox
+                </p>
+
+
+                <p className="
+                text-sm
+                text-slate-500
+                ">
+                  Administrador
+                </p>
+
+
+                <div className="
+                mt-4
+                border-t
+                border-slate-800
+                pt-3
+                ">
+
+                  <p className="
+                  text-xs
+                  text-slate-500
+                  ">
+                    SocialFlow v1.0.0
+                  </p>
+
+                </div>
+
+
+              </div>
+
+            )
+
+          }
+
+
+        </div>
+
+
+
+      </aside>
+
+
+    </>
 
   );
 

@@ -24,14 +24,23 @@ export default function Calendar() {
   const [showForm, setShowForm] = useState(false);
 
 
+
   const [newSchedule, setNewSchedule] = useState<Schedule>({
+
     id: 0,
+
     title: "",
+
     description: "",
-    date: "",
+
+    date: new Date().toISOString().slice(0, 16),
+
     platform: "",
+
     status: "PENDENTE",
+
     client: null,
+
   });
 
 
@@ -45,7 +54,6 @@ export default function Calendar() {
       newSchedule
     );
 
-
     setShowForm(false);
 
   }
@@ -54,27 +62,47 @@ export default function Calendar() {
 
 
 
+
+
   return (
 
-    <div className="space-y-8">
+    <div className="pt-6 space-y-8">
 
 
-      <div className="flex items-center justify-between">
+      {/* Cabeçalho */}
+
+      <div className="
+        flex
+        items-center
+        justify-between
+      ">
 
 
         <div>
 
-          <h1 className="text-4xl font-bold">
+
+          <h1 className="
+            text-4xl
+            font-bold
+            text-white
+            tracking-tight
+          ">
             Calendário
           </h1>
 
 
-          <p className="mt-2 text-slate-400">
+
+          <p className="
+            mt-2
+            text-slate-400
+          ">
             Visualize seus posts agendados.
           </p>
 
 
         </div>
+
+
 
 
 
@@ -88,6 +116,7 @@ export default function Calendar() {
             px-5
             py-3
             font-medium
+            text-white
             transition
             hover:bg-blue-700
           "
@@ -99,24 +128,6 @@ export default function Calendar() {
         </button>
 
 
-      </div>
-
-
-
-
-
-      <div
-        className="
-          rounded-2xl
-          border
-          border-slate-800
-          bg-slate-900
-          p-6
-          shadow-xl
-        "
-      >
-
-        <CalendarGrid />
 
       </div>
 
@@ -125,10 +136,23 @@ export default function Calendar() {
 
 
 
+      {/* Calendário */}
+
+      <CalendarGrid />
+
+
+
+
+
+
+
+
+      {/* Modal */}
 
       {showForm && (
 
         <div
+
           className="
             fixed
             inset-0
@@ -138,10 +162,14 @@ export default function Calendar() {
             justify-center
             bg-black/70
             backdrop-blur-sm
+            p-4
           "
+
         >
 
+
           <div
+
             className="
               w-full
               max-w-lg
@@ -152,7 +180,9 @@ export default function Calendar() {
               p-6
               shadow-2xl
             "
+
           >
+
 
             <ScheduleForm
 
@@ -169,10 +199,10 @@ export default function Calendar() {
 
           </div>
 
+
         </div>
 
       )}
-
 
 
     </div>

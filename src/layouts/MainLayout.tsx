@@ -3,47 +3,83 @@ import type { ReactNode } from "react";
 import Sidebar from "../components/layout/Sidebar";
 import Header from "../components/layout/Header";
 
+import {
+  useSidebar
+} from "../hooks/useSidebar";
 
-type MainLayoutProps = {
+
+interface Props {
+
   children: ReactNode;
-};
+
+}
+
 
 
 export default function MainLayout({
-  children,
-}: MainLayoutProps) {
+  children
+}: Props) {
+
+
+  const {
+    collapsed
+  } = useSidebar();
+
+
 
   return (
 
     <div
+
       className="
-        flex
-        min-h-screen
-        bg-slate-950
-        text-white
+      min-h-screen
+      bg-[#070b18]
+      text-white
       "
+
     >
+
 
       <Sidebar />
 
 
+
+
       <div
-        className="
-          flex
-          flex-1
-          flex-col
-        "
+
+        className={`
+
+        transition-all
+        duration-300
+
+
+        ${
+          collapsed
+          ?
+          "lg:ml-[80px]"
+          :
+          "lg:ml-[260px]"
+        }
+
+        `}
+
       >
+
+
 
         <Header />
 
 
+
+
         <main
+
           className="
-            flex-1
-            overflow-y-auto
-            p-8
+          pt-[72px]
+          min-h-screen
+          p-8
           "
+
         >
 
           {children}
@@ -51,7 +87,9 @@ export default function MainLayout({
         </main>
 
 
+
       </div>
+
 
 
     </div>

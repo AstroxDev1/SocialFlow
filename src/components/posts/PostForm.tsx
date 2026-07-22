@@ -3,125 +3,216 @@ import api from "../../services/api";
 
 
 type Client = {
-  id: number;
-  companyName: string;
+  id:number;
+  companyName:string;
 };
+
 
 
 type Post = {
-  id?: number;
-  title: string;
-  caption?: string;
-  type: string;
-  status: string;
-  clientId?: number | null;
+  id?:number;
+
+  title:string;
+
+  caption?:string;
+
+  type:string;
+
+  platform?:string;
+
+  status:string;
+
+  clientId?:number|null;
 };
+
+
 
 
 type PostFormData = {
-  title: string;
-  caption: string;
-  type: string;
-  status: string;
-  clientId: number | null;
+
+  title:string;
+
+  caption:string;
+
+  type:string;
+
+  platform:string;
+
+  status:string;
+
+  clientId:number|null;
+
 };
+
+
+
 
 
 type Props = {
-  post?: Post | null;
-  onSuccess: () => void;
+
+  post?:Post|null;
+
+  onSuccess:()=>void;
+
 };
 
 
+
+
+
+
+
 export default function PostForm({
+
   post,
+
   onSuccess,
-}: Props) {
+
+}:Props){
 
 
-  const [clients, setClients] = useState<Client[]>([]);
 
 
-  const [form, setForm] = useState<PostFormData>({
-    title: "",
-    caption: "",
-    type: "Instagram",
-    status: "RASCUNHO",
-    clientId: null,
+
+  const [clients,setClients] = useState<Client[]>([]);
+
+
+
+
+
+
+  const [form,setForm] = useState<PostFormData>({
+
+    title:"",
+
+    caption:"",
+
+    type:"Imagem",
+
+    platform:"Instagram",
+
+    status:"RASCUNHO",
+
+    clientId:null,
+
   });
 
 
 
-  async function loadClients() {
 
-    try {
+
+
+
+
+
+  async function loadClients(){
+
+
+    try{
+
 
       const response = await api.get("/clients");
 
+
       setClients(response.data);
 
-    } catch (error) {
+
+
+    }catch(error){
+
 
       console.error(
         "Erro ao carregar clientes",
         error
       );
 
+
     }
+
 
   }
 
 
 
-  useEffect(() => {
-
-  async function fetchData() {
-
-    await loadClients();
 
 
-    if (post) {
 
-      setForm({
 
-        title: post.title,
 
-        caption: post.caption ?? "",
 
-        type: post.type,
+  useEffect(()=>{
 
-        status: post.status,
 
-        clientId: post.clientId ?? null,
+    async function loadData(){
 
-      });
+
+      await loadClients();
+
+
+
+
+      if(post){
+
+
+        setForm({
+
+          title:post.title,
+
+          caption:post.caption ?? "",
+
+          type:post.type,
+
+          platform:post.platform ?? "Instagram",
+
+          status:post.status,
+
+          clientId:post.clientId ?? null,
+
+        });
+
+
+      }
+
 
     }
 
-  }
 
 
-  fetchData();
+    loadData();
 
 
-}, [post]);
+
+  },[post]);
+
+
+
+
+
 
 
 
 
   function handleChange(
-    e: React.ChangeEvent<
+
+    e:
+    React.ChangeEvent<
       HTMLInputElement |
       HTMLTextAreaElement |
       HTMLSelectElement
     >
-  ) {
+
+  ){
+
 
 
     const {
       name,
       value
+
     } = e.target;
+
+
+
 
 
 
@@ -129,14 +220,31 @@ export default function PostForm({
 
       ...form,
 
+
       [name]:
-        name === "clientId"
-          ? value === ""
-            ? null
-            : Number(value)
-          : value,
+
+      name === "clientId"
+
+      ?
+
+      value === ""
+
+      ?
+
+      null
+
+      :
+
+      Number(value)
+
+
+      :
+
+      value
+
 
     });
+
 
 
   }
@@ -144,31 +252,55 @@ export default function PostForm({
 
 
 
+
+
+
+
+
+
+
   async function handleSubmit(
-    e: React.FormEvent
-  ) {
+
+    e:React.FormEvent
+
+  ){
+
+
 
     e.preventDefault();
 
 
-    try {
 
 
-      if (post?.id) {
+
+    try{
+
+
+
+      if(post?.id){
+
 
 
         await api.put(
+
           `/posts/${post.id}`,
+
           form
+
         );
 
 
-      } else {
+
+      }else{
+
 
 
         await api.post(
+
           "/posts",
+
           form
+
         );
 
 
@@ -176,20 +308,32 @@ export default function PostForm({
 
 
 
+
+
+
       onSuccess();
 
 
 
-    } catch (error) {
+
+
+    }catch(error){
+
 
 
       console.error(
+
         "Erro ao salvar post",
+
         error
+
       );
 
 
+
     }
+
+
 
   }
 
@@ -197,45 +341,70 @@ export default function PostForm({
 
 
 
+
+
+
+
   return (
 
+
+
     <form
+
       onSubmit={handleSubmit}
+
       className="space-y-5"
+
     >
+
+
+
+
+
 
 
       <div>
 
+
         <label className="text-sm text-slate-300">
+
           Título
+
         </label>
+
 
 
         <input
 
+
           name="title"
+
 
           value={form.title}
 
+
           onChange={handleChange}
+
 
           required
 
+
           placeholder="Nome do post"
 
+
           className="
-            mt-1
-            w-full
-            rounded-lg
-            border
-            border-slate-700
-            bg-slate-800
-            p-3
-            outline-none
+          mt-1
+          w-full
+          rounded-lg
+          border
+          border-slate-700
+          bg-slate-800
+          p-3
+          outline-none
           "
 
         />
+
 
       </div>
 
@@ -243,37 +412,55 @@ export default function PostForm({
 
 
 
+
+
+
+
       <div>
 
+
         <label className="text-sm text-slate-300">
+
           Legenda
+
         </label>
+
+
 
 
         <textarea
 
+
           name="caption"
+
 
           value={form.caption}
 
+
           onChange={handleChange}
+
 
           rows={4}
 
+
           placeholder="Digite a legenda..."
 
+
           className="
-            mt-1
-            w-full
-            rounded-lg
-            border
-            border-slate-700
-            bg-slate-800
-            p-3
-            outline-none
+          mt-1
+          w-full
+          rounded-lg
+          border
+          border-slate-700
+          bg-slate-800
+          p-3
+          outline-none
           "
 
+
         />
+
+
 
       </div>
 
@@ -281,50 +468,73 @@ export default function PostForm({
 
 
 
+
+
+
+
       <div>
 
+
         <label className="text-sm text-slate-300">
-          Tipo
+
+          Tipo de conteúdo
+
         </label>
+
 
 
         <select
 
+
           name="type"
+
 
           value={form.type}
 
+
           onChange={handleChange}
 
+
           className="
-            mt-1
-            w-full
-            rounded-lg
-            border
-            border-slate-700
-            bg-slate-800
-            p-3
+          mt-1
+          w-full
+          rounded-lg
+          border
+          border-slate-700
+          bg-slate-800
+          p-3
           "
+
 
         >
 
-          <option value="Instagram">
-            Instagram
+
+          <option value="Imagem">
+            Imagem
           </option>
+
 
           <option value="Reels">
             Reels
           </option>
 
+
           <option value="Story">
             Story
           </option>
+
 
           <option value="Carrossel">
             Carrossel
           </option>
 
 
+          <option value="Vídeo">
+            Vídeo
+          </option>
+
+
+
         </select>
 
 
@@ -335,56 +545,161 @@ export default function PostForm({
 
 
 
+
+
+
       <div>
 
+
         <label className="text-sm text-slate-300">
-          Cliente
+
+          Plataforma
+
         </label>
+
+
 
 
         <select
 
-          name="clientId"
 
-          value={form.clientId ?? ""}
+          name="platform"
+
+
+          value={form.platform}
+
 
           onChange={handleChange}
 
+
+
           className="
-            mt-1
-            w-full
-            rounded-lg
-            border
-            border-slate-700
-            bg-slate-800
-            p-3
+          mt-1
+          w-full
+          rounded-lg
+          border
+          border-slate-700
+          bg-slate-800
+          p-3
           "
+
 
         >
 
-          <option value="">
-            Sem cliente
+
+          <option value="Instagram">
+            Instagram
           </option>
+
+
+          <option value="Facebook">
+            Facebook
+          </option>
+
+
+          <option value="TikTok">
+            TikTok
+          </option>
+
+
+          <option value="LinkedIn">
+            LinkedIn
+          </option>
+
+
+
+        </select>
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <div>
+
+
+        <label className="text-sm text-slate-300">
+
+          Cliente
+
+        </label>
+
+
+
+
+        <select
+
+
+          name="clientId"
+
+
+          value={form.clientId ?? ""}
+
+
+          onChange={handleChange}
+
+
+          className="
+          mt-1
+          w-full
+          rounded-lg
+          border
+          border-slate-700
+          bg-slate-800
+          p-3
+          "
+
+
+        >
+
+
+
+          <option value="">
+
+            Sem cliente
+
+          </option>
+
+
 
 
           {clients.map((client)=>(
 
+
             <option
+
               key={client.id}
+
               value={client.id}
+
             >
 
               {client.companyName}
 
+
             </option>
 
+
           ))}
+
 
 
         </select>
 
 
+
       </div>
+
+
+
+
 
 
 
@@ -392,45 +707,69 @@ export default function PostForm({
 
       <div>
 
+
         <label className="text-sm text-slate-300">
+
           Status
+
         </label>
+
+
 
 
         <select
 
+
           name="status"
+
 
           value={form.status}
 
+
           onChange={handleChange}
 
+
+
           className="
-            mt-1
-            w-full
-            rounded-lg
-            border
-            border-slate-700
-            bg-slate-800
-            p-3
+          mt-1
+          w-full
+          rounded-lg
+          border
+          border-slate-700
+          bg-slate-800
+          p-3
           "
+
 
         >
 
+
           <option value="RASCUNHO">
+
             Rascunho
+
           </option>
+
 
 
           <option value="PUBLICADO">
+
             Publicado
+
           </option>
+
+
 
 
         </select>
 
 
+
       </div>
+
+
+
+
 
 
 
@@ -438,30 +777,47 @@ export default function PostForm({
 
       <button
 
+
         type="submit"
 
+
         className="
-          w-full
-          rounded-lg
-          bg-blue-600
-          p-3
-          font-semibold
-          hover:bg-blue-700
+        w-full
+        rounded-lg
+        bg-blue-600
+        p-3
+        font-semibold
+        hover:bg-blue-700
         "
+
 
       >
 
+
+
         {post
-          ? "Salvar alterações"
-          : "Criar Post"
+
+        ?
+
+        "Salvar alterações"
+
+        :
+
+        "Criar Post"
+
         }
+
 
 
       </button>
 
 
 
+
+
+
     </form>
+
 
   );
 

@@ -1,76 +1,168 @@
 import {
-  Bell,
   Search,
-  UserCircle2,
-  LogOut,
+  Menu,
 } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+
+import {
+  useSidebar,
+} from "../../hooks/useSidebar";
+
+
+import NotificationMenu from "./NotificationMenu";
+import UserMenu from "./UserMenu";
 
 
 
-export default function Header() {
+export default function Header(){
 
 
-  const navigate = useNavigate();
+  const {
+    collapsed,
+    toggleMobile,
+  } = useSidebar();
 
-
-
-  function handleLogout() {
-
-    localStorage.removeItem("token");
-
-    navigate("/login");
-
-  }
 
 
 
   return (
 
     <header
-      className="
-        flex
-        h-20
-        items-center
-        justify-between
 
-        border-b
-        border-slate-800
+      className={`
 
-        bg-slate-900/80
+      fixed
 
-        px-8
+      top-0
 
-        backdrop-blur
-      "
+      right-0
+
+
+      left-0
+
+
+      ${
+        collapsed
+        ?
+        "lg:left-[80px]"
+        :
+        "lg:left-[260px]"
+      }
+
+
+      h-[72px]
+
+
+      z-40
+
+
+      flex
+
+      items-center
+
+      justify-between
+
+
+      border-b
+
+      border-slate-800
+
+
+      bg-[#121722]/90
+
+
+      backdrop-blur-xl
+
+
+      px-8
+
+
+      transition-all
+
+      duration-300
+
+      `}
+
     >
+
+
+
+
+      {/* Menu Mobile */}
+
+      <button
+
+        onClick={toggleMobile}
+
+        className="
+        flex
+        text-slate-400
+
+        lg:hidden
+        "
+
+      >
+
+        <Menu size={22}/>
+
+      </button>
+
+
+
 
 
 
       {/* Pesquisa */}
 
       <div
+
         className="
-          flex
-          items-center
-          gap-3
 
-          rounded-xl
+        hidden
 
-          border
-          border-slate-800
+        md:flex
 
-          bg-slate-950
+        w-[360px]
 
-          px-4
+        items-center
+
+        gap-3
+
+
+        rounded-xl
+
+
+        border
+
+        border-slate-800
+
+
+        bg-slate-900
+
+
+        px-4
+
+        py-3
+
+
+        transition
+
+
+        focus-within:border-blue-500/50
+
         "
+
       >
 
+
         <Search
+
           size={18}
+
           className="text-slate-500"
+
         />
+
 
 
         <input
@@ -80,15 +172,16 @@ export default function Header() {
           placeholder="Pesquisar..."
 
           className="
-            w-96
 
-            bg-transparent
+          w-full
 
-            py-3
+          bg-transparent
 
-            text-sm
+          text-sm
 
-            outline-none
+          outline-none
+
+          placeholder:text-slate-500
 
           "
 
@@ -101,107 +194,39 @@ export default function Header() {
 
 
 
+
+
+      {/* Área direita */}
+
       <div
+
         className="
-          flex
-          items-center
-          gap-6
+
+        flex
+
+        items-center
+
+        gap-4
+
         "
+
       >
 
 
-        <button>
-
-          <Bell
-            size={21}
-            className="
-              text-slate-400
-              transition
-              hover:text-white
-            "
-          />
-
-        </button>
+        <NotificationMenu />
 
 
-
-
-
-        <div
-          className="
-            flex
-            items-center
-            gap-3
-          "
-        >
-
-          <UserCircle2
-            size={38}
-            className="text-blue-500"
-          />
-
-
-          <div>
-
-            <p className="font-semibold">
-              Astrox
-            </p>
-
-
-            <p className="text-xs text-slate-400">
-              Administrador
-            </p>
-
-
-          </div>
-
-
-        </div>
-
-
-
-
-
-        <button
-
-          onClick={handleLogout}
-
-          className="
-            flex
-            items-center
-            gap-2
-
-            rounded-xl
-
-            bg-red-600
-
-            px-4
-            py-2
-
-            text-sm
-            font-medium
-
-            transition
-
-            hover:bg-red-700
-
-          "
-
-        >
-
-          <LogOut size={17}/>
-
-          Sair
-
-
-        </button>
-
+        <UserMenu />
 
 
       </div>
 
 
+
+
+
     </header>
+
 
   );
 
