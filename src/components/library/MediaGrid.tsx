@@ -11,6 +11,7 @@ type Media = {
 type MediaGridProps = {
   media: Media[];
   onDelete: (id: number) => void;
+  onEdit: (media: Media) => void;
 };
 
 function formatFileSize(bytes: number) {
@@ -26,6 +27,7 @@ function formatFileSize(bytes: number) {
 export default function MediaGrid({
   media,
   onDelete,
+  onEdit,
 }: MediaGridProps) {
   if (media.length === 0) {
     return (
@@ -148,6 +150,21 @@ export default function MediaGrid({
               >
                 Abrir
               </a>
+
+              <button
+                  onClick={() => onEdit(item)}
+                  className="
+                  rounded-lg
+                  bg-yellow-500
+                  px-4
+                  text-white
+                  transition
+                  hover:bg-yellow-600
+                "
+
+              >
+                ✏️
+              </button>
 
               <button
                   onClick={() => onDelete(item.id)}
