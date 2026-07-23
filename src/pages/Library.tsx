@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import MediaGrid from "../components/library/MediaGrid";
 import UploadModal from "../components/library/UploadModal";
 import EditMediaModal from "../components/library/EditMediaModal";
+import MediaStats from "../components/library/MediaStats";
 
 import Toast from "../components/ui/Toast";
 import ConfirmModal from "../components/ui/ConfirmModal";
@@ -112,6 +113,7 @@ export default function Library() {
 
 
   }, []);
+
 
 
 
@@ -246,7 +248,7 @@ export default function Library() {
       setMedia((old)=>
 
         old.filter(
-          item => item.id !== id
+          item=>item.id !== id
         )
 
       );
@@ -310,7 +312,7 @@ export default function Library() {
 
       setMedia((old)=>
 
-        old.map(item =>
+        old.map(item=>
 
           item.id === data.id
             ? response.data
@@ -396,6 +398,7 @@ export default function Library() {
 
 
 
+
         <button
 
           onClick={() => setShowUpload(true)}
@@ -419,6 +422,17 @@ export default function Library() {
 
 
       </div>
+
+
+
+
+
+
+
+
+      <MediaStats
+        media={media}
+      />
 
 
 
@@ -494,17 +508,27 @@ export default function Library() {
 
 
             className={`
+
               rounded-xl
+
               px-4
+
               py-2
+
               text-sm
+
               transition
+
 
               ${
                 filter === item
+
                 ? "bg-blue-600 text-white"
+
                 : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+
               }
+
             `}
 
           >
@@ -642,10 +666,7 @@ export default function Library() {
 
           title="Excluir mídia"
 
-          message="
-            Tem certeza que deseja remover este arquivo?
-            Essa ação não pode ser desfeita.
-          "
+          message="Tem certeza que deseja remover este arquivo? Essa ação não pode ser desfeita."
 
           onCancel={() =>
             setDeleteId(null)
@@ -665,6 +686,8 @@ export default function Library() {
         />
 
       )}
+
+
 
 
 

@@ -64,7 +64,11 @@ export default function Dashboard() {
 
         {/* Crescimento */}
 
-        <GrowthChart />
+        <GrowthChart 
+        
+        data={monthlyPosts}
+        
+        />
 
         {/* Analytics */}
 

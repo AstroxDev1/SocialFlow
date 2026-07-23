@@ -2,9 +2,10 @@ import SettingsPanel from "../components/settings/SettingsPanel";
 
 export default function Settings() {
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-4xl font-bold">
+    <div className="space-y-8 pt-6">
+
+      <div className="mb-2">
+        <h1 className="text-3xl font-bold text-white">
           Configurações
         </h1>
 
@@ -14,6 +15,7 @@ export default function Settings() {
       </div>
 
       <SettingsPanel />
+
     </div>
   );
 }

@@ -11,16 +11,18 @@ import ScheduleForm from "../schedules/ScheduleForm";
 
 
 type Schedule = {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  platform: string;
-  status: string;
-  client: {
-    companyName: string;
+  id:number;
+  title:string;
+  description:string;
+  date:string;
+  platform:string;
+  status:string;
+  clientId?:number | null;
+  client:{
+    companyName:string;
   } | null;
 };
+
 
 
 
@@ -72,7 +74,7 @@ function getPlatformColor(platform?: string) {
 
 
 
-// 🟡 Status do post
+
 function getStatusIcon(status?: string) {
 
   switch(status?.toUpperCase()) {
@@ -100,10 +102,13 @@ function getStatusIcon(status?: string) {
 
 
 
+
 export default function CalendarGrid() {
 
 
-  const [events,setEvents] = useState<EventInput[]>([]);
+  const [events,setEvents] =
+    useState<EventInput[]>([]);
+
 
 
   const [selectedSchedule,setSelectedSchedule] =
@@ -111,29 +116,34 @@ export default function CalendarGrid() {
 
 
 
-  const [creating,setCreating] = useState(false);
+  const [creating,setCreating] =
+    useState(false);
 
 
 
 
-  const [newSchedule,setNewSchedule] = useState<Schedule>({
+  const [newSchedule,setNewSchedule] =
+    useState<Schedule>({
 
-    id:0,
+      id:0,
 
-    title:"",
+      title:"",
 
-    description:"",
+      description:"",
 
-    date:new Date().toISOString().slice(0,16),
+      date:new Date()
+        .toISOString()
+        .slice(0,16),
 
-    platform:"",
+      platform:"",
 
-    status:"PENDENTE",
+      status:"PENDENTE",
 
-    client:null,
+      clientId:null,
 
-  });
+      client:null,
 
+    });
 
 
 
@@ -150,37 +160,41 @@ export default function CalendarGrid() {
       try{
 
 
-        const response = await api.get<Schedule[]>("/schedules");
+        const response =
+          await api.get<Schedule[]>("/schedules");
 
 
 
-        const calendarEvents = response.data.map((schedule)=>({
+        const calendarEvents =
+          response.data.map((schedule)=>({
 
 
-          id:String(schedule.id),
+            id:String(schedule.id),
 
 
-          title:
-          `${getStatusIcon(schedule.status)} ${schedule.platform || ""} • ${schedule.title}`,
-
-
-
-          start:schedule.date,
-
-
-          className:"calendar-event",
-
-
-          ...getPlatformColor(schedule.platform),
+            title:
+            `${getStatusIcon(schedule.status)} ${schedule.platform || ""} • ${schedule.title}`,
 
 
 
-          extendedProps:{
-            schedule
-          }
+            start:schedule.date,
 
 
-        }));
+            className:"calendar-event",
+
+
+            ...getPlatformColor(
+              schedule.platform
+            ),
+
+
+
+            extendedProps:{
+              schedule
+            }
+
+
+          }));
 
 
 
@@ -190,12 +204,16 @@ export default function CalendarGrid() {
 
       }catch(error){
 
-        console.error(error);
+        console.error(
+          "Erro ao carregar agendamentos:",
+          error
+        );
 
       }
 
 
     }
+
 
 
     loadSchedules();
@@ -211,215 +229,70 @@ export default function CalendarGrid() {
 
 
 
-  async function handleCreate(){
 
+const handleEventClick = (clickInfo: EventClickArg) => {
+  const schedule = clickInfo.event.extendedProps.schedule as Schedule;
 
-    try{
-
-
-      const response = await api.post("/schedules",{
-
-        title:newSchedule.title,
-
-        description:newSchedule.description,
-
-        date:newSchedule.date,
-
-        platform:newSchedule.platform,
-
-        clientId:null,
-
-      });
-
-
-
-      const created=response.data;
-
-
-
-
-      setEvents(old=>[
-
-        ...old,
-
-
-        {
-
-          id:String(created.id),
-
-
-          title:
-          `${getStatusIcon(created.status)} ${created.platform || ""} • ${created.title}`,
-
-
-
-          start:created.date,
-
-
-          className:"calendar-event",
-
-
-          ...getPlatformColor(created.platform),
-
-
-
-          extendedProps:{
-            schedule:created
-          }
-
-        }
-
-
-      ]);
-
-
-
-      setCreating(false);
-
-
-
-    }catch(error){
-
-      console.error(error);
-
-    }
-
-
+  if (schedule) {
+    setSelectedSchedule(schedule);
   }
+};
 
-
-
-
-
-
-
-
-  function handleEventClick(info:EventClickArg){
-
-
-    setSelectedSchedule(
-      info.event.extendedProps.schedule as Schedule
-    );
-
-
-  }
-
-
-
-
-
-
-
-
-
-  async function handleDelete(id:number){
-
-
-    if(!confirm("Excluir este agendamento?"))
-      return;
-
-
-
+async function handleDelete(id: number) {
+  try {
     await api.delete(`/schedules/${id}`);
 
-
-
-    setEvents(old=>
-      old.filter(event=>event.id !== String(id))
+    setEvents((old) =>
+      old.filter((event) => Number(event.id) !== id)
     );
 
-
-
     setSelectedSchedule(null);
-
-
+  } catch (error) {
+    console.error("Erro ao excluir agendamento:", error);
   }
+}
 
-
-
-
-
-
-
-
-
-  async function handleUpdate(schedule:Schedule){
-
-
+async function handleUpdate(schedule: Schedule) {
+  try {
     const response = await api.put(
-
       `/schedules/${schedule.id}`,
-
       {
-
-        title:schedule.title,
-
-        description:schedule.description,
-
-        date:schedule.date,
-
-        platform:schedule.platform,
-
-        status:schedule.status
-
+        title: schedule.title,
+        description: schedule.description,
+        date: schedule.date,
+        platform: schedule.platform,
+        status: schedule.status,
       }
-
     );
 
+    const updated = response.data;
 
-
-
-    setEvents(old=>
-
-
-      old.map(event=>
-
-
-        event.id === String(schedule.id)
-
-        ?
-
-        {
-
-          ...event,
-
-
-          title:
-          `${getStatusIcon(response.data.status)} ${response.data.platform || ""} • ${response.data.title}`,
-
-
-
-          start:response.data.date,
-
-
-          ...getPlatformColor(response.data.platform),
-
-
-
-          extendedProps:{
-            schedule:response.data
-          }
-
-
-        }
-
-
-        :
-
-        event
-
-
+    setEvents((old) =>
+      old.map((event) =>
+        Number(event.id) === updated.id
+          ? {
+              ...event,
+              title: `${getStatusIcon(updated.status)} ${
+                updated.platform || ""
+              } • ${updated.title}`,
+              start: updated.date,
+              extendedProps: {
+                schedule: updated,
+              },
+              ...getPlatformColor(updated.platform),
+            }
+          : event
       )
-
-
     );
 
-
-
-    setSelectedSchedule(null);
-
-
+    setSelectedSchedule(updated);
+  } catch (error) {
+    console.error("Erro ao atualizar agendamento:", error);
   }
+
+  
+}
+
 
 
 
@@ -444,51 +317,22 @@ export default function CalendarGrid() {
       ">
 
 
-
         <FullCalendar
-
-
           plugins={[
             dayGridPlugin,
             interactionPlugin
           ]}
-
-
-
           initialView="dayGridMonth"
-
-
-
           locale={ptBrLocale}
-
-
-
           height={650}
-
-
-
           events={events}
-
-
-
           eventClick={handleEventClick}
-
-
-
           dayMaxEvents={3}
-
-
-
           headerToolbar={{
-
             left:"title",
-
             center:"",
-
             right:"today prev next"
-
           }}
-
 
 
           buttonText={{
@@ -498,57 +342,7 @@ export default function CalendarGrid() {
           }}
 
 
-
         />
-
-
-
-
-
-        {/* Legenda */}
-
-        <div className="
-          mt-6
-          flex
-          flex-wrap
-          gap-5
-          text-sm
-          text-slate-300
-        ">
-
-
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-purple-600"/>
-            Instagram
-          </div>
-
-
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-black border border-slate-500"/>
-            TikTok
-          </div>
-
-
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-red-600"/>
-            YouTube
-          </div>
-
-
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-blue-600"/>
-            Facebook
-          </div>
-
-
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-sky-700"/>
-            LinkedIn
-          </div>
-
-
-        </div>
-
 
 
       </div>
@@ -557,25 +351,14 @@ export default function CalendarGrid() {
 
 
 
-
-
-
-
       <EventModal
-
         schedule={selectedSchedule}
-
-        onClose={()=>setSelectedSchedule(null)}
-
+        onClose={()=>
+          setSelectedSchedule(null)
+        }
         onDelete={handleDelete}
-
         onUpdate={handleUpdate}
-
       />
-
-
-
-
 
 
 
@@ -611,9 +394,11 @@ export default function CalendarGrid() {
 
               onChange={setNewSchedule}
 
-              onSave={handleCreate}
+              onSave={() => handleCreate()}
 
-              onCancel={()=>setCreating(false)}
+              onCancel={()=>
+                setCreating(false)
+              }
 
             />
 
@@ -624,7 +409,6 @@ export default function CalendarGrid() {
         </div>
 
       )}
-
 
 
     </>

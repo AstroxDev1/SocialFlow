@@ -4,6 +4,11 @@ import { BrowserRouter } from "react-router-dom";
 
 import { SidebarProvider } from "./context/SidebarProvider";
 
+import {
+  ThemeProvider,
+} from "./context/ThemeContext";
+
+
 import App from "./App";
 
 import "./index.css";
@@ -12,6 +17,8 @@ import "./index.css";
 createRoot(
   document.getElementById("root")!
 ).render(
+
+<ThemeProvider> 
 
   <StrictMode>
 
@@ -26,5 +33,7 @@ createRoot(
     </BrowserRouter>
 
   </StrictMode>
+
+</ThemeProvider>
 
 );
