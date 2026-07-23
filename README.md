@@ -1,75 +1,216 @@
-# React + TypeScript + Vite
+# 🚀 SocialFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <strong>Uma plataforma completa para gerenciamento de redes sociais, clientes, posts e agendamentos.</strong>
+</p>
 
-Currently, two official plugins are available:
+<p align="center">
+  Construído com React, TypeScript, Node.js, Express, Prisma e PostgreSQL.
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📌 Sobre o Projeto
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O **SocialFlow** é uma aplicação SaaS criada para facilitar o gerenciamento de redes sociais para profissionais, agências e criadores de conteúdo.
 
-## Expanding the ESLint configuration
+A plataforma permite organizar clientes, planejar conteúdos, acompanhar publicações e controlar um calendário editorial completo em um único lugar.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+O projeto foi desenvolvido com foco em:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Arquitetura escalável
+- Código organizado
+- Boas práticas de desenvolvimento
+- Separação entre Frontend e Backend
+- Experiência profissional de usuário
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 🎯 Objetivo
 
-```
+Criar uma ferramenta semelhante às plataformas utilizadas por agências de marketing digital, permitindo:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+✅ Gerenciar clientes  
+✅ Criar e organizar posts  
+✅ Planejar conteúdos  
+✅ Controlar calendário editorial  
+✅ Visualizar métricas  
+✅ Centralizar arquivos e informações  
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 🏗️ Arquitetura do Projeto
 
-```
+             Usuário
+
+                |
+                ↓
+
+      React + TypeScript
+         (Frontend)
+
+                |
+                ↓
+
+          Axios API
+
+                |
+                ↓
+
+      Node.js + Express
+         (Backend)
+
+                |
+                ↓
+
+        Prisma ORM
+
+                |
+                ↓
+
+      PostgreSQL Database
+
+---
+
+# 🛠️ Tecnologias Utilizadas
+
+## Frontend
+
+- ⚛️ React
+- 🔷 TypeScript
+- 🎨 Tailwind CSS
+- 🧭 React Router DOM
+- 🔥 Context API
+- 📅 FullCalendar
+- 🔗 Axios
+- 🎯 Lucide React
+
+
+## Backend
+
+- 🟢 Node.js
+- 🚂 Express
+- 🔐 JWT Authentication
+- 🗄️ Prisma ORM
+- 🐘 PostgreSQL
+
+
+---
+
+# ✨ Funcionalidades
+
+## 🔐 Autenticação
+
+- Login de usuários
+- Geração de token JWT
+- Rotas protegidas
+- Controle de acesso
+
+
+---
+
+## 👥 Clientes
+
+CRUD completo:
+
+- Criar clientes
+- Listar clientes
+- Editar informações
+- Remover clientes
+
+
+Informações:
+
+- Empresa
+- Instagram
+- Nicho
+- Dados personalizados
+
+
+---
+
+## 📝 Posts
+
+Sistema de gerenciamento de conteúdos:
+
+- Criar posts
+- Editar posts
+- Excluir posts
+- Associar cliente
+- Controle de status
+
+
+---
+
+## 📅 Calendário Editorial
+
+Integração com FullCalendar:
+
+- Visualização mensal
+- Criação de eventos
+- Edição de agendamentos
+- Exclusão de eventos
+- Organização por datas
+
+
+---
+
+## 📊 Dashboard
+
+Painel administrativo contendo:
+
+- Total de clientes
+- Posts agendados
+- Indicadores
+- Métricas
+
+
+---
+
+## 🎨 Interface
+
+Recursos:
+
+- Layout moderno
+- Sidebar profissional
+- Tema escuro
+- Componentes reutilizáveis
+- Design responsivo
+
+
+---
+
+# 📂 Estrutura do Projeto
+
+SocialFlow
+
+├── frontend
+│
+│ ├── src
+│ │
+│ ├── components
+│ ├── pages
+│ ├── context
+│ ├── services
+│ └── routes
+│
+
+├── backend
+│
+│ ├── src
+│ │
+│ ├── controllers
+│ ├── routes
+│ ├── middleware
+│ ├── prisma
+│ └── server.ts
+
+
+---
+
+# 🚀 Instalação
+
+## Clone o projeto
+
+```bash
+git clone https://github.com/SEU-USUARIO/socialflow.git
